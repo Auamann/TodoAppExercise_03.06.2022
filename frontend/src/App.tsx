@@ -1,55 +1,47 @@
-import React, {ChangeEvent, FC, useState} from "react";
+import React, { useState, useEffect } from 'react';
+import KanbanColumn from './Components/KanbanColumn';
+import KanbanForm from './Components/KanbanForm';
+import {getKanbans} from "./service/apiService"
+import { KanbanCard, TaskStatus } from './Components/models';
 import "./App.css"
-import {InterfacesTask} from "./Interfaces"
-import TodoTask from "./Components/TodoTask";
+import {BrowserRouter} from "react-router-dom";
+import KanbanCardComp from "./Components/KanbanCardComp";
 
 
-const App: FC = () => {
-    const [task, setTask] = useState<string>("")
-    const [deadline, setDeadline] = useState<number>(0)
-    const [todoList, setTodoList] = useState<InterfacesTask[]>([])
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        if (event.target.name === "task") {
-            setTask(event.target.value)
+function App() {
+    const [kanbans, setKanbans] = useState<Array<KanbanCard>>([])
 
-        } else {
-            setDeadline(Number(event.target.value))
-        }
-
-    }
-    const addTask = (): void => {
-        const newTask = {taskName: task, deadline: deadline}
-        setTodoList([...todoList, newTask])
-        setTask("")
-        setDeadline(0)
-
+    const fetchKanbans = () => {
+        getKanbans().then(data => {
+            setKanbans(data)
+        })
     }
 
-    const completeTask = (taskNameToDelete: string) : void => {
-        setTodoList(
-            todoList.filter((task) => {
-                return task.taskName != taskNameToDelete
-            })
-        )
-    }
+    useEffect(() => {
+
+
+        fetchKanbans()
+    }, [])
+
 
     return (
-        <div className="App">
-            <div className="header"/>
-            <h2>Do! To-Do</h2>
-            <div className="inputContainer">
-                <input type="text" placeholder="Task" name="task" value={task} onChange={handleChange}/>
-                <input type="text" placeholder="Deadline" name="deadline" value={deadline} onChange={handleChange}/>
-            </div>
-            <button onClick={addTask}>Add To-Do</button>
 
-            <div className="todoList"/>
-            {todoList.map((task: InterfacesTask, key: number) => {
-                return <TodoTask key={key} task={task} completeTask={completeTask}/>
-            })}
+        <div>
+            <h2 className="Header"> Überschrift </h2>
+            <KanbanForm/>
+            <div className='column-flex'>
+                <KanbanColumn fetchKanbans={fetchKanbans} title={TaskStatus.OPEN}
+                              kanbanCards={kanbans.filter(kanban => kanban.status === TaskStatus.OPEN)}/>
+                <KanbanColumn fetchKanbans={fetchKanbans} title={TaskStatus.IN_PROGRESS}
+                              kanbanCards={kanbans.filter(kanban => kanban.status === TaskStatus.IN_PROGRESS)}/>
+                <KanbanColumn fetchKanbans={fetchKanbans} title={TaskStatus.DONE}
+                              kanbanCards={kanbans.filter(kanban => kanban.status === TaskStatus.DONE)}/>
+            </div>
         </div>
-    )
+
+
+)
 }
 
-export default App;
+export default App
