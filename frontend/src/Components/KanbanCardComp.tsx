@@ -28,18 +28,18 @@ export default function KanbanCardComp(props: KanbanCardCompProps) {
     },[task, desc])
 
     const promote = () => {
-        promoteKanban(props.task);
-        props.fetchKanban()
+        promoteKanban(props.task).then(props.fetchKanban())
+
     }
 
     const demote = () => {
-        demoteKanban(props.task);
-        props.fetchKanban()
+        demoteKanban(props.task).then(props.fetchKanban())
+
     }
 
     const delKanban = () => {
-        deleteKanban(props.task)
-        props.fetchKanban()
+        deleteKanban(props.task).then(props.fetchKanban())
+
     }
 
     const editKanban = () => {
@@ -63,7 +63,7 @@ export default function KanbanCardComp(props: KanbanCardCompProps) {
                 </>
             }
             <div className="buttons">
-                {props.task.status !== TaskStatus.OPEN ? <button onClick={demote}>Prev </button> : <button onClick={delKanban}>Delete</button>}
+                {props.task.status !== TaskStatus.OPEN ? <button onClick={demote}>Prev</button> : <button onClick={delKanban}>Delete</button>}
                 {props.task.status !== TaskStatus.DONE ? <button onClick={promote}>Next</button> : <button onClick={delKanban}>Delete</button>}
             </div>
 
