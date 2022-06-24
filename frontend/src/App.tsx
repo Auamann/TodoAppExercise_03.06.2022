@@ -8,13 +8,15 @@ import "./App.css"
 
 
 
+
+
 function App() {
     const [kanbans, setKanbans] = useState<Array<KanbanCard>>([])
 
     const fetchKanbans = () => {
         getKanbans().then(data => {
             setKanbans(data)
-        })
+        }).catch(error => console.log(error))
     }
 
     useEffect(() => {
