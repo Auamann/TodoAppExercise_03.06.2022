@@ -4,8 +4,7 @@ import KanbanForm from './Components/KanbanForm';
 import {getKanbans} from "./service/apiService"
 import { KanbanCard, TaskStatus } from './Components/models';
 import "./App.css"
-import {BrowserRouter} from "react-router-dom";
-import KanbanCardComp from "./Components/KanbanCardComp";
+
 
 
 

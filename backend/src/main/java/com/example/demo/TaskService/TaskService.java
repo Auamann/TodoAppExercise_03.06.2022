@@ -1,7 +1,7 @@
 package com.example.demo.TaskService;
 
 import com.example.demo.Task.Task;
-import com.example.demo.TaskRepo.TaskRepo;
+import com.example.demo.TaskRepo.RepoInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +11,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskService {
 
-    private final TaskRepo taskRepo;
+    private final RepoInterface taskRepo;
 
 
     public void addTask(Task taskToAdd) {
-        taskRepo.addTask(taskToAdd);
+        taskRepo.save(taskToAdd);
     }
 
     public Task getTask(String id) {
-        return taskRepo.getTask(id);
+        return taskRepo.findById(id).orElseThrow();
     }
 
     public void saveTask(Task task) {
@@ -27,14 +27,14 @@ public class TaskService {
     }
 
     public List<Task> getTasks() {
-        return taskRepo.getTaskList().values().stream().toList();
+        return taskRepo.findAll();
     }
 
     public Task promoteTask(Task task) {
 
         String currStatus = task.getStatus();
 
-        Task statusToUpdate = taskRepo.getById(task.getId());
+        Task statusToUpdate = taskRepo.findById(task.getId()).orElseThrow();
 
         switch (currStatus) {
             case "OPEN":
@@ -45,7 +45,7 @@ public class TaskService {
                 break;
 
         }
-        taskRepo.updateTask(statusToUpdate);
+        taskRepo.save(statusToUpdate);
 
         return statusToUpdate;
     }
@@ -54,7 +54,7 @@ public class TaskService {
 
         String currStatus = task.getStatus();
 
-        Task statusToUpdate = taskRepo.getById(task.getId());
+        Task statusToUpdate = taskRepo.findById(task.getId()).orElseThrow();
 
         switch (currStatus) {
             case "DONE":
@@ -65,13 +65,13 @@ public class TaskService {
                 break;
 
         }
-        taskRepo.prevTask(statusToUpdate);
+        taskRepo.save(statusToUpdate);
 
         return statusToUpdate;
     }
 
     public void deleteTask(String id) {
-        taskRepo.deleteTask(id);
+        taskRepo.deleteById(id);
 
     }
 
